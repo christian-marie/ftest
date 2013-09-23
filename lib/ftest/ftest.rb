@@ -2,6 +2,7 @@ require 'ftest/instance_dsl'
 require 'ftest/binary_dsl'
 require 'ftest/check'
 require 'ftest/scenario'
+require 'ftest/formatting'
 
 class FTest
 	include InstanceDSL
@@ -17,16 +18,29 @@ class FTest
 	FatalFailure = Class.new(RuntimeError)
 
 	# Kicks off one scenario run
-	def initialize &scenario
+	def initialize scenario
+		@scenario = scenario
+
 		before! if respond_to? :before!
 
 		@@before_checks.each(&method(:run_check!))
-		instance_eval(&scenario)
+		begin
+			instance_eval(&@scenario[:block])
+		rescue Exception => failure
+			handle_failure! failure
+		end
+	
 		@@after_checks.each(&method(:run_check!))
 
 	ensure
 		after! if respond_to? :after!
 		@@post_mortems.each(&method(:run_check!))
+	end
+
+	# This lets us know if, at the time of calling, this instance has had
+	# any failures.
+	def instance_failure?
+		@instance_failure
 	end
 
 	protected
@@ -51,6 +65,14 @@ class FTest
 		# Anything that isn't a routine failure is instant death.
 		case failure
 		when FTest::Failure
+			@instance_failure = true
+
+			# Save our scenario for better errors.
+			failure.instance_variable_set(:@scenario, @scenario)
+			def failure.scenario
+				@scenario
+			end
+
 			@@failures << failure
 		else
 			raise
@@ -60,9 +82,15 @@ class FTest
 	# Class level interface methods.
 	public
 	def self.test!
+		print "Running scenarios: "
 		@@scenarios.each do |scenario|
-			self.new(&scenario[:block])
+			scenario[:runs].times do |i|
+				run = self.new(scenario)
+				print(run.instance_failure? ? 'F' : '.')
+			end
 		end
+		puts
+		puts "Done."
 	end
 
 	# True if all is lost, false if all is well.
@@ -78,16 +106,7 @@ class FTest
 	# Display all failures with backtrace, lines within FTest are omitted
 	# from the backtrace.
 	def self.report!
-		self.failures.each do |failure|
-			if failure.respond_to? :check then
-				puts "In check: #{failure.check[:description]}"
-			end
-			puts "Failure (#{failure.class}): #{failure.message}"
-			puts failure.backtrace.reject{|line|
-				line.include?(File.dirname(__FILE__))
-			}
-			puts
-		end
+		puts FTest::Formatting::format_failures(self.failures)
 	end
 
 	# Class level DSL
@@ -97,7 +116,11 @@ class FTest
 			raise ArgumentError, 'scenario requires a block'
 		end
 
-		@@scenarios << 	::FTest::Scenario.new(description, block)
+		@@scenarios << 	::FTest::Scenario.new(
+			description,
+			block,
+			(params[:runs] or 1)
+		)
 	end
 
 	# These checks are run at the end of each scenario (just before after!)

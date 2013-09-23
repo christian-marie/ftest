@@ -1,4 +1,5 @@
 FTest::Check = Struct.new(
 	:description,
-	:block
+	:block,
+	:runs,
 )

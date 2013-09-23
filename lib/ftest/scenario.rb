@@ -1,4 +1,5 @@
 FTest::Scenario = Struct.new(
 	:description,
-	:block
+	:block,
+	:runs,
 )
