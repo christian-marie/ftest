@@ -11,15 +11,15 @@ module FTest::InstanceDSL
 			@check_description
 		end
 
-		handle_failure(failure)
+		handle_failure!(failure)
 	end
 
 	def fatal! description
-		raise FTest::FatalFailure, description
+		raise ::FTest::FatalFailure, description
 	end
 
 	def fail! description
-		raise FTest::Failure, description
+		raise ::FTest::Failure, description
 	end
 
 	# Check if bool is true, or block evaluates to true.
@@ -27,7 +27,7 @@ module FTest::InstanceDSL
 		if block_given? then
 			unless block.call then
 				raise(
-					::Failure::Failure.new,
+					::FTest::Failure.new,
 					bool_or_description,
 				)
 			end
@@ -35,7 +35,7 @@ module FTest::InstanceDSL
 			unless bool.nil?
 				unless bool then
 					raise(
-						::Failure::Failure.new,
+						::FTest::Failure.new,
 						description
 					)
 				end

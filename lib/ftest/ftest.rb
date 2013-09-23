@@ -84,7 +84,7 @@ class FTest
 			end
 			puts "Failure (#{failure.class}): #{failure.message}"
 			puts failure.backtrace.reject{|line|
-				line =~ /#{__FILE__}/
+				line.include?(File.dirname(__FILE__))
 			}
 			puts
 		end
