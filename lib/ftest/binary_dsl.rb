@@ -34,7 +34,7 @@ module FTest::BinaryDSL
 		@thread.alive?
 	end
 
-	def kill_child! signal=9
+	def kill_child! signal='KILL'
 		Process.kill(signal, @thread.pid)
 	end
 

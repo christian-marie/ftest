@@ -23,18 +23,25 @@ class FTest
 
 		before! if respond_to? :before!
 
-		@@before_checks.each(&method(:run_check!))
+		# before! and after! should not have thier errors handled.
+		# That could be quite confusing 
+
 		begin
+			@@before_checks.each(&method(:run_check!))
 			instance_eval(&@scenario[:block])
+			@@after_checks.each(&method(:run_check!))
 		rescue Exception => failure
 			handle_failure! failure
 		end
 	
-		@@after_checks.each(&method(:run_check!))
 
-	ensure
 		after! if respond_to? :after!
-		@@post_mortems.each(&method(:run_check!))
+
+		begin
+			@@post_mortems.each(&method(:run_check!))
+		rescue Exception => failure
+			handle_failure! failure
+		end
 	end
 
 	# This lets us know if, at the time of calling, this instance has had

@@ -30,19 +30,27 @@ module FTest::InstanceDSL
 		if block_given? then
 			unless block.call then
 				raise(
-					::FTest::Failure.new,
+					::FTest::Failure,
 					bool_or_description,
 				)
 			end
 		else
-			unless bool.nil?
-				unless bool then
-					raise(
-						::FTest::Failure.new,
-						description
-					)
-				end
+			unless bool_or_description then
+				raise(
+					::FTest::Failure,
+					description
+				)
 			end
 		end
+	end
+
+	# Check that a.include? b
+	def assert_inclusion(a, b, description='')
+		a.include?(b) or raise(
+			::FTest::Failure,
+			"assertion failure: " +
+			"#{a.inspect}.include? #{b.inspect} " +
+			"(#{description})"
+		)
 	end
 end
