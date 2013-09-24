@@ -2,10 +2,11 @@
 module FTest::Formatting
 	def self.format_failure(failure)
 		out = ''
-		out += "Failure (#{failure.class}): #{failure.message}\n"
+		out += "Failure (#{failure.class}):\n"
+		out += "  #{failure.message}\n"
 		if failure.respond_to? :extra_details then
 			unless failure.extra_details.empty? then
-				out += "\nExtra details:\n"
+				out += "Extra details:\n"
 				out += failure.extra_details.map do |l|
 					"  #{l}"
 				end * "\n"
@@ -15,7 +16,7 @@ module FTest::Formatting
 		out += "Backtrace:\n"
 		out += failure.backtrace.reject{|line|
 			line.include?(File.dirname(__FILE__))
-		}.map{|l| "  #{l}"} * "\n"
+		}.map{|l| "  #{l}\n"}.join('')
 		out += "\n"
 	end
 
@@ -28,6 +29,6 @@ module FTest::Formatting
 			).lines.map do |l| 
 				"  #{l}" 
 			end
-		end * "\n") + "\n"
+		end.join('')) + "\n"
 	end
 end
