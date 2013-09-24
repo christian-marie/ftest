@@ -45,7 +45,7 @@ describe FTest do
 		it 'tests support/test script' do
 			path = File.join(
 				File.dirname(__FILE__),
-				'support', 'test',
+				'support', 'test'
 			)
 			FTest do
 				before do
@@ -59,7 +59,7 @@ describe FTest do
 				scenario do
 					wait_for_output!
 
-					output = stdout.read(stdout.nread)
+					output = stdout.read
 
 					assert_inclusion(output, 'hai')
 

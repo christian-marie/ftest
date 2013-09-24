@@ -6,7 +6,7 @@ describe ::FTest::ScenarioDSL::FuzzDSL do
 	describe 'fuzz' do
 		it 'throws argument error with nothing' do
 			expect{fuzz('desc')}.to raise_exception(
-				::ArgumentError, /block not supplied/
+				::ArgumentError, /fuzz expected block/
 			)
 		end
 

@@ -1,6 +1,6 @@
 module FTest::ScenarioDSL::AssertionDSL
-	def fail! description
-		raise ::FTest::Failure, description
+	def fail!(description)
+		raise(::FTest::Failure, description)
 	end
 
 	# Check if bool is true, or block evaluates to true.
@@ -9,7 +9,7 @@ module FTest::ScenarioDSL::AssertionDSL
 			unless block.call then
 				raise(
 					::FTest::Failure,
-					bool_or_description,
+					bool_or_description
 				)
 			end
 		else
