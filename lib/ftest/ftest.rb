@@ -9,6 +9,8 @@ module ::Kernel
 end
 
 class FTest::Failure < RuntimeError
-	attr_accessor :failure_details # array of strings
+	def failure_details
+		@failure_details ||= []
+	end
 end
 

@@ -26,6 +26,16 @@ describe ::FTest::Scenario do
 			instance.run!([before], [after])
 			expect(instance.scenario_ran).to be_true
 		end
+
+		it 'stores failures for later perusal' do
+			instance = ::FTest::Scenario.new('desc') do 
+				raise 'explosion'
+			end
+
+			instance.run!
+
+			expect(instance.failure?).to be_true
+			expect(instance.failures).to have(1).things
+		end
 	end
 end
-	

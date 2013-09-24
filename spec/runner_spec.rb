@@ -24,5 +24,39 @@ describe ::FTest::Runner do
 			instance.run!
 		end
 	end
+
+	describe 'report!' do
+		before do
+			# And this is part of the reason for developing this
+			# framework
+			@original_stdout = $stdout
+			$stdout = @stdout = StringIO.new
+		end
+
+		it 'displays scenarios as they run' do
+			instance = ::FTest::Runner.new do 
+				scenario { 'success' }
+				scenario { 'another victory' }
+				scenario('failure'){ fail }
+				scenario('assertion'){
+					assert(false, "extra details")
+				}
+			end
+			
+			instance.report!
+
+			expect(@stdout.string.lines.first).to eql(
+				"Running scenarios: ..FF\n"
+			)
+
+			expect(@stdout.string).to include("failure")
+			expect(@stdout.string).to include("assertion")
+			expect(@stdout.string).to include("extra details")
+		end
+
+		after do
+			$stdout = @original_stdout
+		end
+	end
 end
 	
