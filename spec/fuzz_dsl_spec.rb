@@ -37,8 +37,21 @@ describe ::FTest::ScenarioDSL::FuzzDSL do
 					raise ::FTest::Failure, 'x'
 				end
 			}.to raise_error do |e|
-				expect(e.fuzz_description).
-					to include('explosion')
+				expect(e.extra_details).to include(
+					"whilst fuzzing 'explosion'"
+				)
+			end
+		end
+	end
+
+	describe 'mutate' do
+		before(:each) do
+			@random = Random.new
+		end
+
+		it 'mutates a simple string at least once' do
+			1000.times do
+				expect(mutate('hi')).to_not eql('hi')
 			end
 		end
 	end

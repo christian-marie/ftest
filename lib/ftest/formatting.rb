@@ -5,13 +5,14 @@ module FTest::Formatting
 		out += "Failure (#{failure.class}): #{failure.message}\n"
 		if failure.respond_to? :extra_details then
 			unless failure.extra_details.empty? then
-				out += "Extra details:"
+				out += "\nExtra details:\n"
 				out += failure.extra_details.map do |l|
 					"  #{l}"
 				end * "\n"
 				out += "\n"
 			end
 		end
+		out += "Backtrace:\n"
 		out += failure.backtrace.reject{|line|
 			line.include?(File.dirname(__FILE__))
 		}.map{|l| "  #{l}"} * "\n"

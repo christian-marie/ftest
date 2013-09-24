@@ -69,5 +69,32 @@ describe FTest do
 			end
 		end
 	end
+
+	describe 'fuzz DSL usage' do
+		it 'tests a method' do
+			widget = double('widget')
+			widget.should_receive(:frob).exactly(10).times
+			widget.should_receive(:frob).and_raise(
+				'wat'
+			)
+
+			FTest do
+				scenario do
+					fuzz(
+						'frob',
+						:runs => 11,
+						:seed => 1234
+					) do
+						widget.frob(mutate('x'))
+					end
+				end
+			end
+
+			expect(@stdout.string).to include('whilst fuzzing')
+			expect(@stdout.string).to include('frob')
+			expect(@stdout.string).to include('1234')
+		end
+
+	end
 end
 	

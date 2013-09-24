@@ -8,9 +8,12 @@ module ::Kernel
 	module_function :FTest
 end
 
-class FTest::Failure < RuntimeError
+class ::Exception
 	def extra_details
 		@extra_details ||= []
 	end
+end
+
+class FTest::Failure < RuntimeError
 end
 
