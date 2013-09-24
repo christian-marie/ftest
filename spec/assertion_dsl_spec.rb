@@ -31,4 +31,18 @@ describe ::FTest::ScenarioDSL::AssertionDSL do
 			assert('should not raise') { true }
 		end
 	end
+
+	describe 'assert_inclusion' do
+		it 'does not raise with inclusion' do
+			assert_inclusion('abc', 'a')
+		end
+
+		it 'does raise without inclusion' do
+			expect{
+				assert_inclusion('a', 'b', 'desc')
+			}.to raise_error(
+				::FTest::Failure, /desc/
+			)
+		end
+	end
 end

@@ -41,7 +41,7 @@ describe ::FTest::Runner do
 				scenario { 'another victory' }
 				scenario('failure'){ fail }
 				scenario('assertion'){
-					assert(false, "extra details")
+					assert(false, "potato")
 				}
 			end
 			
@@ -53,7 +53,8 @@ describe ::FTest::Runner do
 
 			expect(@stdout.string).to include("failure")
 			expect(@stdout.string).to include("assertion")
-			expect(@stdout.string).to include("extra details")
+			expect(@stdout.string).to include("potato")
+			expect(@stdout.string).to_not include("Extra details")
 		end
 
 		after do

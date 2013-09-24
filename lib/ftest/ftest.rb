@@ -9,8 +9,8 @@ module ::Kernel
 end
 
 class FTest::Failure < RuntimeError
-	def failure_details
-		@failure_details ||= []
+	def extra_details
+		@extra_details ||= []
 	end
 end
 
