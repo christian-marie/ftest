@@ -1,8 +1,8 @@
 require 'open3'
 require 'io/wait'
 
-module FTest::BinaryDSL
-	def binary! *cmd
+module FTest::ScenarioDSL::BinaryDSL
+	def binary *cmd
 		@stdin, @stdout, @stderr, @thread = Open3.popen3(*cmd)
 	end
 
@@ -19,11 +19,11 @@ module FTest::BinaryDSL
 	end
 
 	def return_code
-		@return_code or (@return_code = @thread.value.to_i)
+		@thread.value.exitstatus
 	end
 
 	def exit_success?
-		@return_code == 0
+		@thread.value.success?
 	end
 
 	def pid

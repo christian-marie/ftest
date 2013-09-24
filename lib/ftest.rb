@@ -1,4 +1,4 @@
-class FTest
+module FTest
 end
 
 require 'ftest/ftest'

@@ -1,13 +1,13 @@
 require 'spec_helper'
 require 'timeout'
 
-describe FTest::BinaryDSL do
-	include FTest::BinaryDSL
+describe ::FTest::Scenario::BinaryDSL do
+	include ::FTest::Scenario::BinaryDSL
 
 	describe 'binary!' do
 		it 'calls popen with exact args' do
 			Open3.should_receive('popen3').with('ponies', 1)
-			binary!('ponies', 1)
+			binary('ponies', 1)
 		end
 	end
 
@@ -33,35 +33,32 @@ describe FTest::BinaryDSL do
 	end
 
 	describe 'return_code' do
-		it 'is retrieved from thread and cached' do
-			@thread = double('thread')
-			@thread.should_receive(:value).and_return(42)
+		it 'is retrieved from thread' do
+			@thread = double(
+				'thread', :value => double(
+					'value', :exitstatus => 42
+				)
+			)
 
 			expect(return_code).to eql(42)
-			expect(@return_code).to eql(42)
-
-			# Caches correctly
-			@return_code = 100
-			expect(return_code).to eql(100)
 		end
 	end
 
 	describe 'exit_success?' do
-		it 'thinks that zero is success' do
-			@return_code = 0
-			expect(exit_success?).to be_true
-		end
+		it 'comes from thread' do
+			@thread = double(
+				'thread', :value => double(
+					'value', :success? => true
+				)
+			)
 
-		it 'thinks that non-zero is not success' do
-			@return_code = -1
-			expect(exit_success?).to be_false
+			expect(exit_success?).to be_true
 		end
 	end
 
 	describe 'pid' do
 		it 'comes straight from thread' do
-			@thread = double('thread')
-			@thread.should_receive(:pid).and_return(42)
+			@thread = double('thread', :pid => 42)
 
 			expect(pid).to eql(42)
 		end
@@ -69,8 +66,8 @@ describe FTest::BinaryDSL do
 
 	describe 'wait_for_output!' do
 		it 'should block with nothing to read' do
-			@stdout, sout = IO.pipe
-			@stderr, serr = IO.pipe
+			@stdout, _ = IO.pipe
+			@stderr, _ = IO.pipe
 
 			expect{
 				Timeout::timeout(0.01) do

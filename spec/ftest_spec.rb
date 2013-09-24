@@ -1,50 +1,61 @@
 require 'spec_helper'
 
 describe FTest do
-	describe 'class DSL' do 
-		it 'runs our before_checks' do
-			class BeforeCheck < FTest
-				before_check('set x'){@x=1}
-			end
-
-			scenario = FTest::Scenario.new(
-				'test case',
-				Proc.new { @x == 1 or fail('thing not set') }
-			)
-
-			BeforeCheck.new(scenario)
-		end
-
-		it 'runs our after_checks' do
-			class AfterCheck < FTest
-				after_check('check x'){ fail unless @x == 2 }
-			end
-
-			scenario = FTest::Scenario.new(
-				'test case',
-				Proc.new { @x = 2 },
-			)
-
-			AfterCheck.new(scenario)
-		end
-
-		it 'runs our post mortem check' do
-			class PostMortem < FTest
-				def after!
-					@x = 3
-				end
-
-				post_mortem 'desc' do
-					fail unless @x == 3
+	describe 'basic test' do 
+		it 'runs scenario' do
+			FTest do
+				scenario 'hai' do
+					$ftest_scenario_ran = true
 				end
 			end
 
-			scenario = FTest::Scenario.new(
-				'test case',
-				Proc.new { },
-			)
+			expect($ftest_scenario_ran).to be_true
+		end
 
-			PostMortem.new(scenario)
+		it 'does before/after blocks order' do
+			FTest do 
+				before do
+					@before = true
+				end
+
+				after do
+					@after = true
+				end
+
+				scenario 'test before and after' do
+					raise unless @before
+					raise if @after
+				end
+			end
+		end
+	end
+
+	describe 'binary DSL usage' do
+		it 'tests support/test script' do
+			path = File.join(
+				File.dirname(__FILE__),
+				'support', 'test',
+			)
+			FTest do
+				before do
+					binary "#{path} hai"
+				end
+
+				after do
+					assert(!exit_success?)
+				end
+
+				scenario do
+					wait_for_output!
+
+					output = stdout.read(stdout.nread)
+
+					assert_inclusion(output, 'hai')
+
+					# Should block till exit
+					assert(return_code == 42)
+				end
+			end
 		end
 	end
 end
