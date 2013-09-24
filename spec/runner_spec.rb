@@ -3,6 +3,7 @@ require 'spec_helper'
 describe ::FTest::Runner do
 	describe 'run!' do 
 		it 'runs defined scenarios correctly' do
+			p0 = Proc.new {0}
 			p1 = Proc.new {1}
 			p2 = Proc.new {2}
 			p3 = Proc.new {3}
@@ -11,14 +12,15 @@ describe ::FTest::Runner do
 				with('', &p3).and_call_original
 
 			instance = ::FTest::Runner.new do 
-				before &p1
-				after &p2
+				helpers(&p0)
+				before(&p1)
+				after(&p2)
 
-				scenario &p3
+				scenario(&p3)
 			end
 
 			::FTest::Scenario.any_instance.should_receive(:run!).
-				with([p1], [p2])
+				with([p1], [p2], [p0])
 
 
 			instance.run!

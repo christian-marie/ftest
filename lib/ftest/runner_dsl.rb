@@ -25,5 +25,12 @@ module ::FTest::RunnerDSL
 			description, &block
 		)
 	end
+
+	def helpers &block
+		unless block_given? then
+			raise(::ArgumentError, 'helper expected block') 
+		end
+		(@helper_blocks ||= []) << block
+	end
 end
 

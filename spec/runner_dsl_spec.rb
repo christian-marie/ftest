@@ -34,4 +34,14 @@ describe ::FTest::RunnerDSL do
 			expect(@scenarios.first).to be_a(::FTest::Scenario)
 		end
 	end
+
+	describe 'helpers' do
+		it 'sticks helpers in @helper_blocks' do
+			expect(@helper_blocks).to be_nil
+			helpers(){}
+			expect(@helper_blocks).to have(1).things
+			helpers(){}
+			expect(@helper_blocks).to have(2).things
+		end
+	end
 end

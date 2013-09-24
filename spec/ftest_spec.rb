@@ -1,6 +1,17 @@
 require 'spec_helper'
 
 describe FTest do
+	before do
+		# And this is part of the reason for developing this
+		# framework
+		@original_stdout = $stdout
+		$stdout = @stdout = StringIO.new
+	end
+
+	after do
+		$stdout = @original_stdout
+	end
+
 	describe 'basic test' do 
 		it 'runs scenario' do
 			FTest do

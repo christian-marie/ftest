@@ -11,7 +11,11 @@ class ::FTest::Scenario
 		@__description__ = description
 	end
 
-	def run!(before_blocks=[], after_blocks=[])
+	def run!(before_blocks=[], after_blocks=[], helper_blocks=[])
+		(helper_blocks||[]).each do |block|
+			instance_eval(&block)
+		end
+
 		(before_blocks||[]).each do |block|
 			instance_eval(&block)
 		end
