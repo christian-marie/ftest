@@ -1,5 +1,6 @@
 require 'base64'
 require 'ftest/ring_buffer'
+require 'uri'
 
 module ::FTest::ScenarioDSL::FuzzDSL
 	# Maybe overflow a 32 bit uint
@@ -85,7 +86,7 @@ module ::FTest::ScenarioDSL::FuzzDSL
 	def random_uri_encoded(length=DEFAULT_MAXLEN)
 		save_last_random_value! do
 			length = @random.rand(DEFAULT_MAXLEN) unless length
-			URI::encode(@random.bytes(length), /./)
+			::URI::encode(@random.bytes(length), /./)
 		end
 	end
 
