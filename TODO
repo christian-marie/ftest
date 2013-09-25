@@ -1,0 +1,2 @@
+* timeout DSL, currently if something can freeze during fuzzing you have to
+  implement your own timeout
