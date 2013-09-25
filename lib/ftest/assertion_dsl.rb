@@ -4,7 +4,7 @@ module FTest::ScenarioDSL::AssertionDSL
 	end
 
 	# Check if bool is true, or block evaluates to true.
-	def assert(bool_or_description, description='', &block)
+	def assert(bool_or_description, description='assertion failed', &block)
 		if block_given? then
 			unless block.call then
 				raise(

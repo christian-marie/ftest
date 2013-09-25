@@ -100,6 +100,7 @@ describe ::FTest::ScenarioDSL::FuzzDSL do
 		it 'provides a string' do
 			# 1/3 ratio
 			expect(random_uri_encoded(10).length).to eql(30)
+			expect(random_uri_encoded).to_not include("\n")
 		end
 	end
 

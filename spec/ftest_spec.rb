@@ -93,6 +93,13 @@ describe FTest do
 			expect(@stdout.string).to include('whilst fuzzing')
 			expect(@stdout.string).to include('frob')
 			expect(@stdout.string).to include('1234')
+
+			last_values = File.join(
+				File.dirname(__FILE__),
+				'..', 'ftest_last_values_1234'
+			)
+			expect(File.exists?(last_values)).to be
+			File.unlink(last_values) #cleanup
 		end
 
 	end

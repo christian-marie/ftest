@@ -86,7 +86,9 @@ module ::FTest::ScenarioDSL::FuzzDSL
 	def random_uri_encoded(length=DEFAULT_MAXLEN)
 		save_last_random_value! do
 			length = @random.rand(DEFAULT_MAXLEN) unless length
-			::URI::encode(@random.bytes(length), /./)
+			::URI::encode(@random.bytes(length), /./).gsub(
+				"\n", "%0A" # wat
+			)
 		end
 	end
 
@@ -130,6 +132,9 @@ module ::FTest::ScenarioDSL::FuzzDSL
 	end
 
 	def write_random_values!
+		unless @last_random_values then
+			raise ::ArgumentError, 'no fuzz values to report'
+		end
 		require 'tempfile'
 		file = File.open("./ftest_last_values_#{@random.seed}", 'w')
 
