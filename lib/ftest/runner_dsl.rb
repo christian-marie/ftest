@@ -16,13 +16,31 @@ module ::FTest::RunnerDSL
 		(@after_blocks ||= []) << block
 	end
 
-	def scenario description='', &block
+	def scenario *arguments, &block
+		if arguments[0].is_a?(String) then
+			description = arguments[0]
+		else
+			description = ''
+		end
+
+		if arguments[0].is_a?(Hash) then
+			options = arguments[0]
+		elsif arguments[1].is_a?(Hash) then
+			options = arguments[1]
+		else
+			options = {}
+		end
+
 		unless block_given? then
 			raise(::ArgumentError, 'scenario expected block') 
 		end
 
-		(@scenarios ||= []) << ::FTest::Scenario.new(
-			description, &block
+		@scenarios ||= [] 
+		@scenarios += Array.new(
+				(options[:runs] or 1),
+				::FTest::Scenario.new(
+					description, &block
+				)
 		)
 	end
 

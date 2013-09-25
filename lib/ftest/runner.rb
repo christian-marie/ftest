@@ -40,6 +40,8 @@ class ::FTest::Runner
 				)
 			end
 		end
+
+		puts
 	end
 end
 
