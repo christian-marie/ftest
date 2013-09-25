@@ -142,7 +142,7 @@ module ::FTest::ScenarioDSL::FuzzDSL
 		MAX_SAVE.downto(1) do |i|
 			file.write("Random value: #{i}\n")
 			file.write(("="*79) + "\n")
-			file.write(@last_random_values[i-1])
+			file.write("#{@last_random_values[i-1]}\n")
 			file.write("="*79 + "\n")
 			file.write("\n")
 		end
