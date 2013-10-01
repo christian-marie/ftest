@@ -3,9 +3,9 @@ class ::FTest::RingBuffer
 		@array = Array.new(size)
 	end
 
-	def push(*e)
+	def push(e)
 		@array.shift
-		@array.push(*e)
+		@array.push(e)
 		self
 	end
 
